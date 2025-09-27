@@ -1,0 +1,424 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>main_qt module &mdash; School Management System 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=8d563738"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="validation module" href="validation.html" />
+    <link rel="prev" title="forms module" href="forms.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            School Management System
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Lab2_Hadi_Elham</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Course.html">Course module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Instructor.html">Instructor module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Person.html">Person module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Student.html">Student module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="db.html">db module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="forms.html">forms module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">main_qt module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#main_qt.CourseTab"><code class="docutils literal notranslate"><span class="pre">CourseTab</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#main_qt.CourseTab.add"><code class="docutils literal notranslate"><span class="pre">CourseTab.add()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main_qt.CourseTab.assign_instructor"><code class="docutils literal notranslate"><span class="pre">CourseTab.assign_instructor()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main_qt.CourseTab.cancel_edit"><code class="docutils literal notranslate"><span class="pre">CourseTab.cancel_edit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main_qt.CourseTab.delete"><code class="docutils literal notranslate"><span class="pre">CourseTab.delete()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main_qt.CourseTab.edit"><code class="docutils literal notranslate"><span class="pre">CourseTab.edit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main_qt.CourseTab.refresh"><code class="docutils literal notranslate"><span class="pre">CourseTab.refresh()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main_qt.CourseTab.search"><code class="docutils literal notranslate"><span class="pre">CourseTab.search()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main_qt.CourseTab.update_course"><code class="docutils literal notranslate"><span class="pre">CourseTab.update_course()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#main_qt.InstructorTab"><code class="docutils literal notranslate"><span class="pre">InstructorTab</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#main_qt.InstructorTab.add"><code class="docutils literal notranslate"><span class="pre">InstructorTab.add()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main_qt.InstructorTab.assign_course"><code class="docutils literal notranslate"><span class="pre">InstructorTab.assign_course()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main_qt.InstructorTab.cancel_edit"><code class="docutils literal notranslate"><span class="pre">InstructorTab.cancel_edit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main_qt.InstructorTab.delete"><code class="docutils literal notranslate"><span class="pre">InstructorTab.delete()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main_qt.InstructorTab.edit"><code class="docutils literal notranslate"><span class="pre">InstructorTab.edit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main_qt.InstructorTab.refresh"><code class="docutils literal notranslate"><span class="pre">InstructorTab.refresh()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main_qt.InstructorTab.search"><code class="docutils literal notranslate"><span class="pre">InstructorTab.search()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main_qt.InstructorTab.update_instructor"><code class="docutils literal notranslate"><span class="pre">InstructorTab.update_instructor()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#main_qt.RegistrationTab"><code class="docutils literal notranslate"><span class="pre">RegistrationTab</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#main_qt.RegistrationTab.init_ui"><code class="docutils literal notranslate"><span class="pre">RegistrationTab.init_ui()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main_qt.RegistrationTab.refresh"><code class="docutils literal notranslate"><span class="pre">RegistrationTab.refresh()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main_qt.RegistrationTab.refresh_course_combo"><code class="docutils literal notranslate"><span class="pre">RegistrationTab.refresh_course_combo()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main_qt.RegistrationTab.refresh_student_combo"><code class="docutils literal notranslate"><span class="pre">RegistrationTab.refresh_student_combo()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main_qt.RegistrationTab.refresh_table"><code class="docutils literal notranslate"><span class="pre">RegistrationTab.refresh_table()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main_qt.RegistrationTab.register_student"><code class="docutils literal notranslate"><span class="pre">RegistrationTab.register_student()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main_qt.RegistrationTab.search"><code class="docutils literal notranslate"><span class="pre">RegistrationTab.search()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main_qt.RegistrationTab.unregister_student"><code class="docutils literal notranslate"><span class="pre">RegistrationTab.unregister_student()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#main_qt.SchoolManagementSystem"><code class="docutils literal notranslate"><span class="pre">SchoolManagementSystem</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#main_qt.SchoolManagementSystem.backup_db"><code class="docutils literal notranslate"><span class="pre">SchoolManagementSystem.backup_db()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main_qt.SchoolManagementSystem.load_json"><code class="docutils literal notranslate"><span class="pre">SchoolManagementSystem.load_json()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main_qt.SchoolManagementSystem.save_json"><code class="docutils literal notranslate"><span class="pre">SchoolManagementSystem.save_json()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#main_qt.StudentTab"><code class="docutils literal notranslate"><span class="pre">StudentTab</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#main_qt.StudentTab.add"><code class="docutils literal notranslate"><span class="pre">StudentTab.add()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main_qt.StudentTab.cancel_edit"><code class="docutils literal notranslate"><span class="pre">StudentTab.cancel_edit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main_qt.StudentTab.delete"><code class="docutils literal notranslate"><span class="pre">StudentTab.delete()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main_qt.StudentTab.edit"><code class="docutils literal notranslate"><span class="pre">StudentTab.edit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main_qt.StudentTab.refresh"><code class="docutils literal notranslate"><span class="pre">StudentTab.refresh()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main_qt.StudentTab.search"><code class="docutils literal notranslate"><span class="pre">StudentTab.search()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main_qt.StudentTab.update_student"><code class="docutils literal notranslate"><span class="pre">StudentTab.update_student()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="validation.html">validation module</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">School Management System</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">Lab2_Hadi_Elham</a></li>
+      <li class="breadcrumb-item active">main_qt module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/main_qt.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-main_qt">
+<span id="main-qt-module"></span><h1>main_qt module<a class="headerlink" href="#module-main_qt" title="Link to this heading"></a></h1>
+<p>Main GUI module for the School Management System using PyQt5.</p>
+<p>This module provides the complete graphical user interface for managing
+students, instructors, courses, and registrations. It includes tabbed
+interface, data validation, and database operations.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="main_qt.CourseTab">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">main_qt.</span></span><span class="sig-name descname"><span class="pre">CourseTab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/main_qt.html#CourseTab"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main_qt.CourseTab" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QWidget</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="main_qt.CourseTab.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/main_qt.html#CourseTab.add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main_qt.CourseTab.add" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main_qt.CourseTab.assign_instructor">
+<span class="sig-name descname"><span class="pre">assign_instructor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/main_qt.html#CourseTab.assign_instructor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main_qt.CourseTab.assign_instructor" title="Link to this definition"></a></dt>
+<dd><p>Assign an instructor to a selected course</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main_qt.CourseTab.cancel_edit">
+<span class="sig-name descname"><span class="pre">cancel_edit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/main_qt.html#CourseTab.cancel_edit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main_qt.CourseTab.cancel_edit" title="Link to this definition"></a></dt>
+<dd><p>Cancel edit mode and reset form</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main_qt.CourseTab.delete">
+<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/main_qt.html#CourseTab.delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main_qt.CourseTab.delete" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main_qt.CourseTab.edit">
+<span class="sig-name descname"><span class="pre">edit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/main_qt.html#CourseTab.edit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main_qt.CourseTab.edit" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main_qt.CourseTab.refresh">
+<span class="sig-name descname"><span class="pre">refresh</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/main_qt.html#CourseTab.refresh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main_qt.CourseTab.refresh" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main_qt.CourseTab.search">
+<span class="sig-name descname"><span class="pre">search</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/main_qt.html#CourseTab.search"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main_qt.CourseTab.search" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main_qt.CourseTab.update_course">
+<span class="sig-name descname"><span class="pre">update_course</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/main_qt.html#CourseTab.update_course"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main_qt.CourseTab.update_course" title="Link to this definition"></a></dt>
+<dd><p>Update existing course with validation</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="main_qt.InstructorTab">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">main_qt.</span></span><span class="sig-name descname"><span class="pre">InstructorTab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/main_qt.html#InstructorTab"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main_qt.InstructorTab" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QWidget</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="main_qt.InstructorTab.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/main_qt.html#InstructorTab.add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main_qt.InstructorTab.add" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main_qt.InstructorTab.assign_course">
+<span class="sig-name descname"><span class="pre">assign_course</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/main_qt.html#InstructorTab.assign_course"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main_qt.InstructorTab.assign_course" title="Link to this definition"></a></dt>
+<dd><p>Assign a course to a selected instructor</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main_qt.InstructorTab.cancel_edit">
+<span class="sig-name descname"><span class="pre">cancel_edit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/main_qt.html#InstructorTab.cancel_edit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main_qt.InstructorTab.cancel_edit" title="Link to this definition"></a></dt>
+<dd><p>Cancel edit mode and reset form</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main_qt.InstructorTab.delete">
+<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/main_qt.html#InstructorTab.delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main_qt.InstructorTab.delete" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main_qt.InstructorTab.edit">
+<span class="sig-name descname"><span class="pre">edit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/main_qt.html#InstructorTab.edit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main_qt.InstructorTab.edit" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main_qt.InstructorTab.refresh">
+<span class="sig-name descname"><span class="pre">refresh</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/main_qt.html#InstructorTab.refresh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main_qt.InstructorTab.refresh" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main_qt.InstructorTab.search">
+<span class="sig-name descname"><span class="pre">search</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/main_qt.html#InstructorTab.search"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main_qt.InstructorTab.search" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main_qt.InstructorTab.update_instructor">
+<span class="sig-name descname"><span class="pre">update_instructor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/main_qt.html#InstructorTab.update_instructor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main_qt.InstructorTab.update_instructor" title="Link to this definition"></a></dt>
+<dd><p>Update existing instructor with validation</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="main_qt.RegistrationTab">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">main_qt.</span></span><span class="sig-name descname"><span class="pre">RegistrationTab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/main_qt.html#RegistrationTab"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main_qt.RegistrationTab" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QWidget</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="main_qt.RegistrationTab.init_ui">
+<span class="sig-name descname"><span class="pre">init_ui</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/main_qt.html#RegistrationTab.init_ui"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main_qt.RegistrationTab.init_ui" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main_qt.RegistrationTab.refresh">
+<span class="sig-name descname"><span class="pre">refresh</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/main_qt.html#RegistrationTab.refresh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main_qt.RegistrationTab.refresh" title="Link to this definition"></a></dt>
+<dd><p>Refresh all data</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main_qt.RegistrationTab.refresh_course_combo">
+<span class="sig-name descname"><span class="pre">refresh_course_combo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/main_qt.html#RegistrationTab.refresh_course_combo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main_qt.RegistrationTab.refresh_course_combo" title="Link to this definition"></a></dt>
+<dd><p>Refresh course dropdown</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main_qt.RegistrationTab.refresh_student_combo">
+<span class="sig-name descname"><span class="pre">refresh_student_combo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/main_qt.html#RegistrationTab.refresh_student_combo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main_qt.RegistrationTab.refresh_student_combo" title="Link to this definition"></a></dt>
+<dd><p>Refresh student dropdown</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main_qt.RegistrationTab.refresh_table">
+<span class="sig-name descname"><span class="pre">refresh_table</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/main_qt.html#RegistrationTab.refresh_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main_qt.RegistrationTab.refresh_table" title="Link to this definition"></a></dt>
+<dd><p>Refresh registration table</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main_qt.RegistrationTab.register_student">
+<span class="sig-name descname"><span class="pre">register_student</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/main_qt.html#RegistrationTab.register_student"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main_qt.RegistrationTab.register_student" title="Link to this definition"></a></dt>
+<dd><p>Register selected student for selected course</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main_qt.RegistrationTab.search">
+<span class="sig-name descname"><span class="pre">search</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/main_qt.html#RegistrationTab.search"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main_qt.RegistrationTab.search" title="Link to this definition"></a></dt>
+<dd><p>Search registrations</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main_qt.RegistrationTab.unregister_student">
+<span class="sig-name descname"><span class="pre">unregister_student</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/main_qt.html#RegistrationTab.unregister_student"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main_qt.RegistrationTab.unregister_student" title="Link to this definition"></a></dt>
+<dd><p>Unregister selected student from selected course</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="main_qt.SchoolManagementSystem">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">main_qt.</span></span><span class="sig-name descname"><span class="pre">SchoolManagementSystem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/main_qt.html#SchoolManagementSystem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main_qt.SchoolManagementSystem" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QMainWindow</span></code></p>
+<p>Main application window for the School Management System.</p>
+<p>Provides a tabbed interface for managing students, instructors, courses,
+and registrations. Includes database operations and data import/export.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tabs</strong> (<em>QTabWidget</em>) – Tab widget containing all management tabs.</p></li>
+<li><p><strong>student_tab</strong> (<a class="reference internal" href="#main_qt.StudentTab" title="main_qt.StudentTab"><em>StudentTab</em></a>) – Student management tab.</p></li>
+<li><p><strong>instructor_tab</strong> (<a class="reference internal" href="#main_qt.InstructorTab" title="main_qt.InstructorTab"><em>InstructorTab</em></a>) – Instructor management tab.</p></li>
+<li><p><strong>course_tab</strong> (<a class="reference internal" href="#main_qt.CourseTab" title="main_qt.CourseTab"><em>CourseTab</em></a>) – Course management tab.</p></li>
+<li><p><strong>registration_tab</strong> (<a class="reference internal" href="#main_qt.RegistrationTab" title="main_qt.RegistrationTab"><em>RegistrationTab</em></a>) – Registration management tab.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="main_qt.SchoolManagementSystem.backup_db">
+<span class="sig-name descname"><span class="pre">backup_db</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/main_qt.html#SchoolManagementSystem.backup_db"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main_qt.SchoolManagementSystem.backup_db" title="Link to this definition"></a></dt>
+<dd><p>Create a backup of the database.</p>
+<p>Opens a file dialog for user to choose backup location and creates
+a copy of the current database file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main_qt.SchoolManagementSystem.load_json">
+<span class="sig-name descname"><span class="pre">load_json</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/main_qt.html#SchoolManagementSystem.load_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main_qt.SchoolManagementSystem.load_json" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main_qt.SchoolManagementSystem.save_json">
+<span class="sig-name descname"><span class="pre">save_json</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/main_qt.html#SchoolManagementSystem.save_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main_qt.SchoolManagementSystem.save_json" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="main_qt.StudentTab">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">main_qt.</span></span><span class="sig-name descname"><span class="pre">StudentTab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/main_qt.html#StudentTab"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main_qt.StudentTab" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QWidget</span></code></p>
+<p>Student management tab widget.</p>
+<p>Provides interface for adding, editing, deleting, and searching students.
+Includes form validation and course registration functionality.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>main</strong> (<a class="reference internal" href="#main_qt.SchoolManagementSystem" title="main_qt.SchoolManagementSystem"><em>SchoolManagementSystem</em></a>) – Reference to main application window.</p></li>
+<li><p><strong>table</strong> (<em>QTableWidget</em>) – Table widget displaying student data.</p></li>
+<li><p><strong>name_edit</strong> (<em>QLineEdit</em>) – Text input for student name.</p></li>
+<li><p><strong>age_edit</strong> (<em>QLineEdit</em>) – Text input for student age.</p></li>
+<li><p><strong>email_edit</strong> (<em>QLineEdit</em>) – Text input for student email.</p></li>
+<li><p><strong>id_edit</strong> (<em>QLineEdit</em>) – Text input for student ID.</p></li>
+<li><p><strong>course_combo</strong> (<em>QComboBox</em>) – Dropdown for course selection.</p></li>
+<li><p><strong>add_btn</strong> (<em>QPushButton</em>) – Button for adding/updating students.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="main_qt.StudentTab.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/main_qt.html#StudentTab.add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main_qt.StudentTab.add" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main_qt.StudentTab.cancel_edit">
+<span class="sig-name descname"><span class="pre">cancel_edit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/main_qt.html#StudentTab.cancel_edit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main_qt.StudentTab.cancel_edit" title="Link to this definition"></a></dt>
+<dd><p>Cancel edit mode and reset form</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main_qt.StudentTab.delete">
+<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/main_qt.html#StudentTab.delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main_qt.StudentTab.delete" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main_qt.StudentTab.edit">
+<span class="sig-name descname"><span class="pre">edit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/main_qt.html#StudentTab.edit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main_qt.StudentTab.edit" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main_qt.StudentTab.refresh">
+<span class="sig-name descname"><span class="pre">refresh</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/main_qt.html#StudentTab.refresh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main_qt.StudentTab.refresh" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main_qt.StudentTab.search">
+<span class="sig-name descname"><span class="pre">search</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/main_qt.html#StudentTab.search"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main_qt.StudentTab.search" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main_qt.StudentTab.update_student">
+<span class="sig-name descname"><span class="pre">update_student</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/main_qt.html#StudentTab.update_student"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main_qt.StudentTab.update_student" title="Link to this definition"></a></dt>
+<dd><p>Update existing student with validation</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="forms.html" class="btn btn-neutral float-left" title="forms module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="validation.html" class="btn btn-neutral float-right" title="validation module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Hadi Elham.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
