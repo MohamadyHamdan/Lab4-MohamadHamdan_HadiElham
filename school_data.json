@@ -1,0 +1,19 @@
+{
+  "metadata": {
+    "export_date": "2025-09-13 18:45:37.068464",
+    "version": "1.0",
+    "description": "School Management System Data Export"
+  },
+  "students": [
+    {
+      "student_id": "887",
+      "name": "Xjghjhv",
+      "age": 1,
+      "email": "xahgh@vkjh.khara",
+      "registered_courses": []
+    }
+  ],
+  "instructors": [],
+  "courses": [],
+  "registrations": []
+}

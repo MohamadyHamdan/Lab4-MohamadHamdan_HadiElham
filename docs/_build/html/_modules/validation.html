@@ -1,0 +1,560 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>validation &mdash; School Management System 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            School Management System
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">Lab2_Hadi_Elham</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">School Management System</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">validation</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for validation</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Validation module providing comprehensive data validation for the School Management System.</span>
+
+<span class="sd">This module contains the DataValidator class and ValidationError exception for</span>
+<span class="sd">validating all input data including names, ages, emails, IDs, and checking for</span>
+<span class="sd">duplicates in the database.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sqlite3</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">db</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_connection</span>
+
+<span class="c1"># Custom exception for handling validation errors</span>
+<div class="viewcode-block" id="ValidationError">
+<a class="viewcode-back" href="../validation.html#validation.ValidationError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ValidationError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Custom exception raised when data validation fails.</span>
+<span class="sd">    </span>
+<span class="sd">    :ivar message: Error message describing the validation failure.</span>
+<span class="sd">    :vartype message: str</span>
+<span class="sd">    :ivar field: Name of the field that failed validation.</span>
+<span class="sd">    :vartype field: str, optional</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize ValidationError with message and optional field.</span>
+<span class="sd">        </span>
+<span class="sd">        :param message: Error message describing the validation failure.</span>
+<span class="sd">        :type message: str</span>
+<span class="sd">        :param field: Name of the field that failed validation.</span>
+<span class="sd">        :type field: str, optional</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">field</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DataValidator">
+<a class="viewcode-back" href="../validation.html#validation.DataValidator">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DataValidator</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Comprehensive data validator for the School Management System.</span>
+<span class="sd">    </span>
+<span class="sd">    Provides static methods for validating names, ages, emails, IDs, and checking</span>
+<span class="sd">    for duplicates in the database. Uses regex patterns and database queries to</span>
+<span class="sd">    ensure data integrity and consistency.</span>
+<span class="sd">    </span>
+<span class="sd">    :cvar MIN_AGE: Minimum allowed age.</span>
+<span class="sd">    :vartype MIN_AGE: int</span>
+<span class="sd">    :cvar MAX_AGE: Maximum allowed age.</span>
+<span class="sd">    :vartype MAX_AGE: int</span>
+<span class="sd">    :cvar MIN_NAME_LENGTH: Minimum name length.</span>
+<span class="sd">    :vartype MIN_NAME_LENGTH: int</span>
+<span class="sd">    :cvar MAX_NAME_LENGTH: Maximum name length.</span>
+<span class="sd">    :vartype MAX_NAME_LENGTH: int</span>
+<span class="sd">    :cvar MIN_ID_LENGTH: Minimum ID length.</span>
+<span class="sd">    :vartype MIN_ID_LENGTH: int</span>
+<span class="sd">    :cvar MAX_ID_LENGTH: Maximum ID length.</span>
+<span class="sd">    :vartype MAX_ID_LENGTH: int</span>
+<span class="sd">    :cvar MIN_EMAIL_LENGTH: Minimum email length.</span>
+<span class="sd">    :vartype MIN_EMAIL_LENGTH: int</span>
+<span class="sd">    :cvar MAX_EMAIL_LENGTH: Maximum email length.</span>
+<span class="sd">    :vartype MAX_EMAIL_LENGTH: int</span>
+<span class="sd">    :cvar EMAIL_REGEX: Regex pattern for email validation.</span>
+<span class="sd">    :vartype EMAIL_REGEX: str</span>
+<span class="sd">    :cvar ID_REGEX: Regex pattern for ID validation.</span>
+<span class="sd">    :vartype ID_REGEX: str</span>
+<span class="sd">    :cvar NAME_REGEX: Regex pattern for name validation.</span>
+<span class="sd">    :vartype NAME_REGEX: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1"># Validation constants - keeping these reasonable</span>
+    <span class="n">MIN_AGE</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">MAX_AGE</span> <span class="o">=</span> <span class="mi">150</span>
+    <span class="n">MIN_NAME_LENGTH</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">MAX_NAME_LENGTH</span> <span class="o">=</span> <span class="mi">100</span>
+    <span class="n">MIN_ID_LENGTH</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">MAX_ID_LENGTH</span> <span class="o">=</span> <span class="mi">20</span>
+    <span class="n">MIN_EMAIL_LENGTH</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">MAX_EMAIL_LENGTH</span> <span class="o">=</span> <span class="mi">254</span>
+    
+    <span class="c1"># Regex patterns for validation</span>
+    <span class="n">EMAIL_REGEX</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$&quot;</span>
+    <span class="n">ID_REGEX</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;^[a-zA-Z0-9_-]+$&quot;</span>  <span class="c1"># Only alphanumeric, underscore, and hyphen</span>
+    <span class="n">NAME_REGEX</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;^[a-zA-Z\s&#39;-]+$&quot;</span>  <span class="c1"># Letters, spaces, apostrophes, and hyphens</span>
+    
+<div class="viewcode-block" id="DataValidator.validate_email">
+<a class="viewcode-back" href="../validation.html#validation.DataValidator.validate_email">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_email</span><span class="p">(</span><span class="n">email</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Validate email format and return cleaned email.</span>
+<span class="sd">        </span>
+<span class="sd">        :param email: Email address to validate.</span>
+<span class="sd">        :type email: str</span>
+<span class="sd">        :return: Validated and cleaned email in lowercase.</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        :raises ValidationError: If email is empty, too short, too long, or invalid format.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Check if email is provided</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">email</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s2">&quot;Email is required&quot;</span><span class="p">,</span> <span class="s2">&quot;email&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Clean up the email</span>
+        <span class="n">email</span> <span class="o">=</span> <span class="n">email</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        
+        <span class="c1"># Check length constraints</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">email</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">DataValidator</span><span class="o">.</span><span class="n">MIN_EMAIL_LENGTH</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Email must be at least </span><span class="si">{</span><span class="n">DataValidator</span><span class="o">.</span><span class="n">MIN_EMAIL_LENGTH</span><span class="si">}</span><span class="s2"> characters&quot;</span><span class="p">,</span> <span class="s2">&quot;email&quot;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">email</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">DataValidator</span><span class="o">.</span><span class="n">MAX_EMAIL_LENGTH</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Email must be no more than </span><span class="si">{</span><span class="n">DataValidator</span><span class="o">.</span><span class="n">MAX_EMAIL_LENGTH</span><span class="si">}</span><span class="s2"> characters&quot;</span><span class="p">,</span> <span class="s2">&quot;email&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Validate email format using regex</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">DataValidator</span><span class="o">.</span><span class="n">EMAIL_REGEX</span><span class="p">,</span> <span class="n">email</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s2">&quot;Invalid email format. Please use format: user@domain.com&quot;</span><span class="p">,</span> <span class="s2">&quot;email&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Return lowercase email for consistency</span>
+        <span class="k">return</span> <span class="n">email</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span></div>
+
+    
+<div class="viewcode-block" id="DataValidator.validate_age">
+<a class="viewcode-back" href="../validation.html#validation.DataValidator.validate_age">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_age</span><span class="p">(</span><span class="n">age</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Validate age and return as integer.</span>
+<span class="sd">        </span>
+<span class="sd">        :param age: Age as string to validate.</span>
+<span class="sd">        :type age: str</span>
+<span class="sd">        :return: Validated age as integer.</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        :raises ValidationError: If age is empty, not a number, or out of range.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Make sure age is provided</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">age</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s2">&quot;Age is required&quot;</span><span class="p">,</span> <span class="s2">&quot;age&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Clean up the input</span>
+        <span class="n">age</span> <span class="o">=</span> <span class="n">age</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        
+        <span class="c1"># Convert to integer</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">age_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">age</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s2">&quot;Age must be a valid number&quot;</span><span class="p">,</span> <span class="s2">&quot;age&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Check age bounds</span>
+        <span class="k">if</span> <span class="n">age_int</span> <span class="o">&lt;</span> <span class="n">DataValidator</span><span class="o">.</span><span class="n">MIN_AGE</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Age must be at least </span><span class="si">{</span><span class="n">DataValidator</span><span class="o">.</span><span class="n">MIN_AGE</span><span class="si">}</span><span class="s2"> year old&quot;</span><span class="p">,</span> <span class="s2">&quot;age&quot;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">age_int</span> <span class="o">&gt;</span> <span class="n">DataValidator</span><span class="o">.</span><span class="n">MAX_AGE</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Age must be no more than </span><span class="si">{</span><span class="n">DataValidator</span><span class="o">.</span><span class="n">MAX_AGE</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;age&quot;</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">age_int</span></div>
+
+    
+<div class="viewcode-block" id="DataValidator.validate_name">
+<a class="viewcode-back" href="../validation.html#validation.DataValidator.validate_name">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_name</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Validate name format and return cleaned name.</span>
+<span class="sd">        </span>
+<span class="sd">        :param name: Name to validate.</span>
+<span class="sd">        :type name: str</span>
+<span class="sd">        :return: Validated and cleaned name with proper capitalization.</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        :raises ValidationError: If name is empty, too short, too long, or invalid format.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s2">&quot;Name is required&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">)</span>
+        
+        <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">DataValidator</span><span class="o">.</span><span class="n">MIN_NAME_LENGTH</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Name must be at least </span><span class="si">{</span><span class="n">DataValidator</span><span class="o">.</span><span class="n">MIN_NAME_LENGTH</span><span class="si">}</span><span class="s2"> characters&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">DataValidator</span><span class="o">.</span><span class="n">MAX_NAME_LENGTH</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Name must be no more than </span><span class="si">{</span><span class="n">DataValidator</span><span class="o">.</span><span class="n">MAX_NAME_LENGTH</span><span class="si">}</span><span class="s2"> characters&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">DataValidator</span><span class="o">.</span><span class="n">NAME_REGEX</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s2">&quot;Name can only contain letters, spaces, apostrophes, and hyphens&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Capitalize first letter of each word</span>
+        <span class="k">return</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">word</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">())</span></div>
+
+    
+<div class="viewcode-block" id="DataValidator.validate_id">
+<a class="viewcode-back" href="../validation.html#validation.DataValidator.validate_id">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_id</span><span class="p">(</span><span class="n">id_value</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">id_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ID&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Validate ID format and return cleaned ID.</span>
+<span class="sd">        </span>
+<span class="sd">        :param id_value: ID value to validate.</span>
+<span class="sd">        :type id_value: str</span>
+<span class="sd">        :param id_type: Type of ID for error messages, defaults to &quot;ID&quot;.</span>
+<span class="sd">        :type id_type: str, optional</span>
+<span class="sd">        :return: Validated and cleaned ID in uppercase.</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        :raises ValidationError: If ID is empty, too short, too long, or invalid format.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">id_value</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">id_type</span><span class="si">}</span><span class="s2"> is required&quot;</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">)</span>
+        
+        <span class="n">id_value</span> <span class="o">=</span> <span class="n">id_value</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">id_value</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">DataValidator</span><span class="o">.</span><span class="n">MIN_ID_LENGTH</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">id_type</span><span class="si">}</span><span class="s2"> must be at least </span><span class="si">{</span><span class="n">DataValidator</span><span class="o">.</span><span class="n">MIN_ID_LENGTH</span><span class="si">}</span><span class="s2"> characters&quot;</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">id_value</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">DataValidator</span><span class="o">.</span><span class="n">MAX_ID_LENGTH</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">id_type</span><span class="si">}</span><span class="s2"> must be no more than </span><span class="si">{</span><span class="n">DataValidator</span><span class="o">.</span><span class="n">MAX_ID_LENGTH</span><span class="si">}</span><span class="s2"> characters&quot;</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">DataValidator</span><span class="o">.</span><span class="n">ID_REGEX</span><span class="p">,</span> <span class="n">id_value</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">id_type</span><span class="si">}</span><span class="s2"> can only contain letters, numbers, underscores, and hyphens&quot;</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">id_value</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span></div>
+
+    
+<div class="viewcode-block" id="DataValidator.check_student_id_exists">
+<a class="viewcode-back" href="../validation.html#validation.DataValidator.check_student_id_exists">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">check_student_id_exists</span><span class="p">(</span><span class="n">student_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">exclude_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if student ID already exists in database&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">get_connection</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">exclude_id</span><span class="p">:</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT COUNT(*) FROM students WHERE student_id = ? AND student_id != ?&quot;</span><span class="p">,</span> 
+                         <span class="p">(</span><span class="n">student_id</span><span class="p">,</span> <span class="n">exclude_id</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT COUNT(*) FROM students WHERE student_id = ?&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">student_id</span><span class="p">,))</span>
+            <span class="k">return</span> <span class="n">c</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span></div>
+
+    
+<div class="viewcode-block" id="DataValidator.check_instructor_id_exists">
+<a class="viewcode-back" href="../validation.html#validation.DataValidator.check_instructor_id_exists">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">check_instructor_id_exists</span><span class="p">(</span><span class="n">instructor_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">exclude_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if instructor ID already exists in database&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">get_connection</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">exclude_id</span><span class="p">:</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT COUNT(*) FROM instructors WHERE instructor_id = ? AND instructor_id != ?&quot;</span><span class="p">,</span> 
+                         <span class="p">(</span><span class="n">instructor_id</span><span class="p">,</span> <span class="n">exclude_id</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT COUNT(*) FROM instructors WHERE instructor_id = ?&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">instructor_id</span><span class="p">,))</span>
+            <span class="k">return</span> <span class="n">c</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span></div>
+
+    
+<div class="viewcode-block" id="DataValidator.check_course_id_exists">
+<a class="viewcode-back" href="../validation.html#validation.DataValidator.check_course_id_exists">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">check_course_id_exists</span><span class="p">(</span><span class="n">course_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">exclude_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if course ID already exists in database&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">get_connection</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">exclude_id</span><span class="p">:</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT COUNT(*) FROM courses WHERE course_id = ? AND course_id != ?&quot;</span><span class="p">,</span> 
+                         <span class="p">(</span><span class="n">course_id</span><span class="p">,</span> <span class="n">exclude_id</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT COUNT(*) FROM courses WHERE course_id = ?&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">course_id</span><span class="p">,))</span>
+            <span class="k">return</span> <span class="n">c</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span></div>
+
+    
+<div class="viewcode-block" id="DataValidator.check_instructor_exists">
+<a class="viewcode-back" href="../validation.html#validation.DataValidator.check_instructor_exists">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">check_instructor_exists</span><span class="p">(</span><span class="n">instructor_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if instructor exists in database&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">get_connection</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT COUNT(*) FROM instructors WHERE instructor_id = ?&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">instructor_id</span><span class="p">,))</span>
+            <span class="k">return</span> <span class="n">c</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span></div>
+
+    
+<div class="viewcode-block" id="DataValidator.check_email_exists">
+<a class="viewcode-back" href="../validation.html#validation.DataValidator.check_email_exists">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">check_email_exists</span><span class="p">(</span><span class="n">email</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">table</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">exclude_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if email already exists in specified table&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">get_connection</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">exclude_id</span><span class="p">:</span>
+                <span class="n">id_field</span> <span class="o">=</span> <span class="s2">&quot;student_id&quot;</span> <span class="k">if</span> <span class="n">table</span> <span class="o">==</span> <span class="s2">&quot;students&quot;</span> <span class="k">else</span> <span class="s2">&quot;instructor_id&quot;</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;SELECT COUNT(*) FROM </span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s2"> WHERE email = ? AND </span><span class="si">{</span><span class="n">id_field</span><span class="si">}</span><span class="s2"> != ?&quot;</span><span class="p">,</span> 
+                         <span class="p">(</span><span class="n">email</span><span class="p">,</span> <span class="n">exclude_id</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;SELECT COUNT(*) FROM </span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s2"> WHERE email = ?&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">email</span><span class="p">,))</span>
+            <span class="k">return</span> <span class="n">c</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span></div>
+
+    
+<div class="viewcode-block" id="DataValidator.validate_student_data">
+<a class="viewcode-back" href="../validation.html#validation.DataValidator.validate_student_data">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_student_data</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">age</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">email</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">student_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> 
+                            <span class="n">is_edit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">exclude_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Validate all student data and return cleaned values.</span>
+<span class="sd">        </span>
+<span class="sd">        :param name: Student&#39;s name to validate.</span>
+<span class="sd">        :type name: str</span>
+<span class="sd">        :param age: Student&#39;s age to validate.</span>
+<span class="sd">        :type age: str</span>
+<span class="sd">        :param email: Student&#39;s email to validate.</span>
+<span class="sd">        :type email: str</span>
+<span class="sd">        :param student_id: Student&#39;s ID to validate.</span>
+<span class="sd">        :type student_id: str</span>
+<span class="sd">        :param is_edit: Whether this is an edit operation, defaults to False.</span>
+<span class="sd">        :type is_edit: bool, optional</span>
+<span class="sd">        :param exclude_id: ID to exclude from duplicate checks, defaults to None.</span>
+<span class="sd">        :type exclude_id: str, optional</span>
+<span class="sd">        :return: Tuple of (validated_name, validated_age, validated_email, validated_id).</span>
+<span class="sd">        :rtype: Tuple[str, int, str, str]</span>
+<span class="sd">        :raises ValidationError: If any validation fails or duplicates are found.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">errors</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">validated_name</span> <span class="o">=</span> <span class="n">DataValidator</span><span class="o">.</span><span class="n">validate_name</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+        
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">validated_age</span> <span class="o">=</span> <span class="n">DataValidator</span><span class="o">.</span><span class="n">validate_age</span><span class="p">(</span><span class="n">age</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+        
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">validated_email</span> <span class="o">=</span> <span class="n">DataValidator</span><span class="o">.</span><span class="n">validate_email</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+        
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">validated_id</span> <span class="o">=</span> <span class="n">DataValidator</span><span class="o">.</span><span class="n">validate_id</span><span class="p">(</span><span class="n">student_id</span><span class="p">,</span> <span class="s2">&quot;Student ID&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+        
+        <span class="c1"># Check for duplicates only if validation passed</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">errors</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">DataValidator</span><span class="o">.</span><span class="n">check_student_id_exists</span><span class="p">(</span><span class="n">validated_id</span><span class="p">,</span> <span class="n">exclude_id</span><span class="p">):</span>
+                <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Student ID already exists&quot;</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="n">DataValidator</span><span class="o">.</span><span class="n">check_email_exists</span><span class="p">(</span><span class="n">validated_email</span><span class="p">,</span> <span class="s2">&quot;students&quot;</span><span class="p">,</span> <span class="n">exclude_id</span><span class="p">):</span>
+                <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Email already exists for another student&quot;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">errors</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s2">&quot;; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">errors</span><span class="p">))</span>
+        
+        <span class="k">return</span> <span class="n">validated_name</span><span class="p">,</span> <span class="n">validated_age</span><span class="p">,</span> <span class="n">validated_email</span><span class="p">,</span> <span class="n">validated_id</span></div>
+
+    
+<div class="viewcode-block" id="DataValidator.validate_instructor_data">
+<a class="viewcode-back" href="../validation.html#validation.DataValidator.validate_instructor_data">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_instructor_data</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">age</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">email</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">instructor_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> 
+                               <span class="n">is_edit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">exclude_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate all instructor data and return cleaned values&quot;&quot;&quot;</span>
+        <span class="n">errors</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">validated_name</span> <span class="o">=</span> <span class="n">DataValidator</span><span class="o">.</span><span class="n">validate_name</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+        
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">validated_age</span> <span class="o">=</span> <span class="n">DataValidator</span><span class="o">.</span><span class="n">validate_age</span><span class="p">(</span><span class="n">age</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+        
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">validated_email</span> <span class="o">=</span> <span class="n">DataValidator</span><span class="o">.</span><span class="n">validate_email</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+        
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">validated_id</span> <span class="o">=</span> <span class="n">DataValidator</span><span class="o">.</span><span class="n">validate_id</span><span class="p">(</span><span class="n">instructor_id</span><span class="p">,</span> <span class="s2">&quot;Instructor ID&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+        
+        <span class="c1"># Check for duplicates only if validation passed</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">errors</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">DataValidator</span><span class="o">.</span><span class="n">check_instructor_id_exists</span><span class="p">(</span><span class="n">validated_id</span><span class="p">,</span> <span class="n">exclude_id</span><span class="p">):</span>
+                <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Instructor ID already exists&quot;</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="n">DataValidator</span><span class="o">.</span><span class="n">check_email_exists</span><span class="p">(</span><span class="n">validated_email</span><span class="p">,</span> <span class="s2">&quot;instructors&quot;</span><span class="p">,</span> <span class="n">exclude_id</span><span class="p">):</span>
+                <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Email already exists for another instructor&quot;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">errors</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s2">&quot;; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">errors</span><span class="p">))</span>
+        
+        <span class="k">return</span> <span class="n">validated_name</span><span class="p">,</span> <span class="n">validated_age</span><span class="p">,</span> <span class="n">validated_email</span><span class="p">,</span> <span class="n">validated_id</span></div>
+
+    
+<div class="viewcode-block" id="DataValidator.validate_course_data">
+<a class="viewcode-back" href="../validation.html#validation.DataValidator.validate_course_data">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_course_data</span><span class="p">(</span><span class="n">course_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">course_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">instructor_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">exclude_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate course data and return cleaned values&quot;&quot;&quot;</span>
+        <span class="n">errors</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">validated_id</span> <span class="o">=</span> <span class="n">DataValidator</span><span class="o">.</span><span class="n">validate_id</span><span class="p">(</span><span class="n">course_id</span><span class="p">,</span> <span class="s2">&quot;Course ID&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+        
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">validated_name</span> <span class="o">=</span> <span class="n">DataValidator</span><span class="o">.</span><span class="n">validate_name</span><span class="p">(</span><span class="n">course_name</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+        
+        <span class="c1"># Validate instructor ID if provided</span>
+        <span class="n">validated_instructor_id</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">instructor_id</span> <span class="ow">and</span> <span class="n">instructor_id</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">validated_instructor_id</span> <span class="o">=</span> <span class="n">DataValidator</span><span class="o">.</span><span class="n">validate_id</span><span class="p">(</span><span class="n">instructor_id</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="s2">&quot;Instructor ID&quot;</span><span class="p">)</span>
+                <span class="c1"># Check if instructor exists</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">DataValidator</span><span class="o">.</span><span class="n">check_instructor_exists</span><span class="p">(</span><span class="n">validated_instructor_id</span><span class="p">):</span>
+                    <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Selected instructor does not exist&quot;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Instructor validation failed: </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Check for duplicates only if validation passed</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">errors</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">DataValidator</span><span class="o">.</span><span class="n">check_course_id_exists</span><span class="p">(</span><span class="n">validated_id</span><span class="p">,</span> <span class="n">exclude_id</span><span class="p">):</span>
+                <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Course ID already exists&quot;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">errors</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s2">&quot;; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">errors</span><span class="p">))</span>
+        
+        <span class="k">return</span> <span class="n">validated_id</span><span class="p">,</span> <span class="n">validated_name</span><span class="p">,</span> <span class="n">validated_instructor_id</span></div>
+</div>
+
+
+<span class="c1"># Convenience functions for backward compatibility</span>
+<div class="viewcode-block" id="is_valid_email">
+<a class="viewcode-back" href="../validation.html#validation.is_valid_email">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_valid_email</span><span class="p">(</span><span class="n">email</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Legacy function for email validation&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">DataValidator</span><span class="o">.</span><span class="n">validate_email</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">except</span> <span class="n">ValidationError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="is_non_negative_int">
+<a class="viewcode-back" href="../validation.html#validation.is_non_negative_int">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_non_negative_int</span><span class="p">(</span><span class="n">val</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Legacy function for age validation&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">DataValidator</span><span class="o">.</span><span class="n">validate_age</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">except</span> <span class="n">ValidationError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Hadi Elham.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
